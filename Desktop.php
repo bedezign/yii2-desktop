@@ -39,7 +39,7 @@ class Desktop extends \yii\base\Widget
 	 * to the "callback()" function.
 	 * @var string
 	 */
-	public $eventUrl   = '/default/desktop';
+	public $eventUrl   = null;
 
 	/**
 	 * A unique ID for this desktop.
