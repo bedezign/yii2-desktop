@@ -1,0 +1,242 @@
+.align_center { text-align: center; }
+.align_right  { text-align: right; }
+.float_left   { float: left; }
+.float_right  { float: right; }
+
+
+.ui-resizable-se {
+  background: url(../images/gui/window_corner.gif) no-repeat right bottom;
+  font-size: 0;
+  overflow: hidden;
+  width: 15px;
+  height: 15px;
+  right: 0;
+  bottom: 0;
+}
+
+div.ui-resizable-handle {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+
+.application_window {
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -webkit-background-clip: padding-box;
+  color: #000;
+  display: none;
+  width: 700px;
+  height: 300px;
+  top: 30px;
+  left: 120px;
+  z-index: 2;
+  position: absolute !important;
+  right: auto;
+  bottom: auto;
+}
+
+.application_window .window_titlebar {
+  background: #333 url(../images/gui/bar_bottom.png) repeat-x;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-background-clip: padding-box;
+  color: #fff;
+  font-weight: bold;
+  overflow: hidden;
+  line-height: 30px;
+  padding: 0 10px;
+  text-shadow: #000 0 1px 1px;
+  height: 30px;
+}
+
+.application_window .window_icon {
+  float: left;
+  margin: 4px 5px 0 0;
+}
+
+.application_window .window_icon img {
+  height: 20px;
+}
+
+.application_window .window_titlebar {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.application_window .window_buttons {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.application_window .window_titlebar .window_button {
+  background: url(../images/gui/window_buttons.gif) no-repeat;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -webkit-background-clip: padding-box;
+  float: left;
+  font-size: 0;
+  margin: 6px 5px 0 0;
+  width: 28px;
+  height: 15px;
+}
+.application_window .window_titlebar .window_button.minimize:hover { background-position: 0 -15px; }
+.application_window .window_titlebar .window_button.maximize { background-position: -28px 0; }
+.application_window .window_titlebar .window_button.maximize:hover { background-position: -28px -15px; }
+.application_window .window_titlebar .window_button.close { background-position: -56px 0; }
+.application_window .window_titlebar .window_button.close:hover {
+  background-position: -56px -15px;
+  box-shadow: #f00 0 0 10px;
+    -moz-box-shadow: #f00 0 0 10px;
+    -webkit-box-shadow: #f00 0 0 10px;
+}
+
+
+.application_window .window_footer {
+  background: #fff url(../images/gui/bar_top.png) repeat-x left bottom;
+  border-top: 1px solid #bbb;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-background-clip: padding-box;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 20px;
+  overflow: hidden;
+  text-align: center;
+  text-shadow: #fff 0 1px 1px;
+  height: 20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.application_window .window_content {
+  line-height: 1.5;
+  position: absolute;
+  overflow: auto;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+}
+
+.application_window.window_topmost, .application_window.ui-draggable-dragging { z-index: 10; }
+.application_window.ui-draggable-dragging { opacity: 0.5; }
+.application_window.ui-draggable-dragging .window_content, .application_window.ui-draggable-dragging .window_bottom { display: none; }
+.application_window .window_content>iframe { overflow: hidden;}
+.window_maximized.ui-draggable-dragging { opacity: 1; }
+
+.window_maximized {
+  border: 0;
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  -webkit-background-clip: padding-box;
+  width: 100%;
+  height: 100%;
+}
+.window_maximized .window_titlebar, .window_maximized .window_footer {
+  border-radius: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  -webkit-background-clip: padding-box;
+}
+
+.window_maximized .ui-resizable-se { display: none; }
+
+.desktop_wrapper .dock {
+  position: absolute;
+  font-weight: bold;
+  left: 0;
+  right: 0;
+  background: #333 url(../images/gui/bar_bottom.png) repeat-x;
+  border-top: 1px solid #fff;
+  color: #fff;
+  font-size: 13px;
+  line-height: 30px;
+  opacity: 0.8;
+  overflow: hidden;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-shadow: #000 0 1px 1px;
+  height: 30px;
+  bottom: 0;
+}
+
+.desktop_wrapper .dock .show_desktop {
+  position: absolute;
+  right: 5px;
+  top: 8px;
+}
+
+.desktop_wrapper .dock ul {
+  margin: 0;
+  padding: 0;
+}
+.desktop_wrapper .dock li {
+  float: left;
+  display: none;
+  margin: 0 0 10px 5px;
+  min-width: 150px;
+  list-style: none;
+}
+
+.desktop_wrapper .dock li a {
+  display: block;
+  padding: 0 10px;
+  background: #333;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -webkit-background-clip: padding-box;
+  color: #fff;
+  overflow: hidden;
+  height: 30px;
+  text-decoration: none;
+}
+
+.desktop_wrapper .dock li a:hover {
+  background: #000;
+}
+
+.desktop_wrapper .dock li a:active {
+  background: #c60;
+  border: 1px solid #fff;
+  padding: 0 9px;
+}
+
+.desktop_wrapper .dock li a img {
+  height: 22px;
+  position: relative;
+  top: 5px;
+}
+
+.application_shortcut {
+  color: black;
+  display: block;
+  font-size: 0.8rem;
+  overflow: visible;
+  position: absolute;
+  text-align: center;
+  text-decoration: none;
+}
+
+.application_shortcut .title {
+  display: block;
+  white-space: nowrap;
+}
