@@ -25,11 +25,6 @@ class Shortcut extends components\Component
 	public $id        = null;
 
 	/**
-	 * @var null
-	 */
-	public $image     = null;
-
-	/**
 	 * Attributes for the anchor. By default this just contains a 'href' = '#application_id'
 	 * @var array
 	 */
@@ -65,11 +60,6 @@ class Shortcut extends components\Component
 			'x' => $this->position['x'] + $this->deltaX, 'y' => $this->position['y'] + $this->deltaY]);
 	}
 
-	public function getImageUrl()
-	{
-		return $this->image ? $this->image : ($this->desktop->assetsUrl . '/images/icon_application.png');
-	}
-
 	/**
 	 * Creates a shortcut based on the given application (same icon, title etc)
 	 * @param Application $application
@@ -79,7 +69,9 @@ class Shortcut extends components\Component
 	{
 		$shortcut = new static;
 		$shortcut->title  = $application->title;
-		$shortcut->image  = $application->icon;
+		if ($application->hasIcon)
+			$shortcut->icon = $application->icon;
+
 		$shortcut->setTargetApplication($application);
 
 		return $shortcut;

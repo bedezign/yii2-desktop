@@ -25,12 +25,6 @@ class Application extends components\Component
 	public $title = 'Application';
 
 	/**
-	 * Application icon URL. If empty, the default icon is used.
-	 * @var string
-	 */
-	public $icon = null;
-
-	/**
 	 * If this application is via an IFrame, this is the application route for that frame
 	 * @var string
 	 */
@@ -46,7 +40,7 @@ class Application extends components\Component
 	 * Positional data of the application window
 	 * @var string
 	 */
-	public $windowPosition = null;
+	public $windowState = null;
 
 	public $windowMaximised = false;
 
@@ -56,6 +50,13 @@ class Application extends components\Component
 	 */
 	public $sessionData = null;
 
+	/**
+	 * Application icon URL. If empty, the default icon is used.
+	 * @var Icon
+	 */
+	protected $_icon = null;
+
+
 	public function init()
 	{
 		if (!$this->id)
@@ -64,14 +65,48 @@ class Application extends components\Component
 		parent::init();
 	}
 
-	public function getIconUrl()
+	/**
+	 * @param array[int, int]        $size          array with new width and height.
+	 */
+	public function setSize($size)
 	{
-		return $this->icon ? $this->icon : ($this->desktop->assetsUrl . '/images/icon_application.png');
+		if (!$this->windowState)
+			// Nothing yet, fake a window position save first
+			$this->windowState = ['top' => 'auto', 'left' => 'auto', 'bottom' => 'auto', 'right' => 'auto'];
+
+		$this->windowState['width'] = str_replace('px', '', $size[0]) . 'px';
+		$this->windowState['height'] = str_replace('px', '', $size[1]) . 'px';
 	}
 
+	/**
+	 * @param array[int, int]     $position         array with new x and y position (left and top)
+	 */
+	public function setPosition($position)
+	{
+		if (!$this->windowState)
+			// Nothing yet, fake a window position save first
+			$this->windowState = ['bottom' => 'auto', 'right' => 'auto', 'width' => '700px', 'height' => '300px'];
+
+		$this->windowState['left'] = str_replace('px', '', $position[0]) . 'px';
+		$this->windowState['top'] = str_replace('px', '', $position[1]) . 'px';
+	}
+
+
+	/**
+	 * Converts the ID into an internally used application ID
+	 * @return string
+	 */
 	public function getApplicationId()
 	{
 		return 'application_' . Html::encode($this->id);
+	}
+
+	public static function toRegularId($applicationId)
+	{
+		if (substr($applicationId, 0, 12) == 'application_')
+			return Html::decode(substr($applicationId, 12));
+
+		return $applicationId;
 	}
 
 	public function renderWindow()
@@ -100,12 +135,12 @@ class Application extends components\Component
 	public function renderDockButton()
 	{
 		$id = $this->applicationId;
-		$icon = $this->iconUrl;
+		$icon = $this->getIcon()->render(Icon::DISPLAY_DOCK);
 		$title = $this->title;
 		return <<<HTML
 <li id="icon_dock_{$id}">
 	<a href="#window_{$id}" id="{$id}" class="application_dock_button">
-		<img src="$icon" alt="$title" /> $title
+		$icon $title
 	</a>
 </li>
 HTML;
@@ -137,7 +172,7 @@ HTML;
 			case 'window.changed' :
 				$this->windowMaximised = isset($data['maximized']) && $data['maximized'] == 'true';
 				unset($data['maximized']);
-				$this->windowPosition = $data;
+				$this->windowState = $data;
 				return true;
 		}
 

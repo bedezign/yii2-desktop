@@ -57,15 +57,6 @@ div.ui-resizable-handle {
   height: 30px;
 }
 
-.application_window .window_icon {
-  float: left;
-  margin: 4px 5px 0 0;
-}
-
-.application_window .window_icon img {
-  height: 20px;
-}
-
 .application_window .window_titlebar {
   position: absolute;
   left: 0;
@@ -93,7 +84,10 @@ div.ui-resizable-handle {
 .application_window .window_titlebar .window_button.minimize:hover { background-position: 0 -15px; }
 .application_window .window_titlebar .window_button.maximize { background-position: -28px 0; }
 .application_window .window_titlebar .window_button.maximize:hover { background-position: -28px -15px; }
-.application_window .window_titlebar .window_button.close { background-position: -56px 0; }
+.application_window .window_titlebar .window_button.close {
+  background-position: -56px 0;
+  opacity: 1 !important;  /* damn you twitter bootstrap */
+}
 .application_window .window_titlebar .window_button.close:hover {
   background-position: -56px -15px;
   box-shadow: #f00 0 0 10px;
@@ -218,12 +212,6 @@ div.ui-resizable-handle {
   background: #c60;
   border: 1px solid #fff;
   padding: 0 9px;
-}
-
-.desktop_wrapper .dock li a img {
-  height: 22px;
-  position: relative;
-  top: 5px;
 }
 
 .application_shortcut {

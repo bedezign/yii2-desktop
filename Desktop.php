@@ -89,7 +89,7 @@ class Desktop extends \yii\base\Widget
 		$request = \Yii::$app->request;
 
 		$type = $request->post('action');
-		$application = $this->findApplicationById($request->post('application'));
+		$application = $this->findApplicationById(Application::toRegularId($request->post('application')));
 		if ($application && $application->canHandleEvent($type))
 			return $application->event($request->post());
 
@@ -109,11 +109,11 @@ class Desktop extends \yii\base\Widget
 	 */
 	public function registerApplication(Application $application, $createDesktopShortcut = true)
 	{
-		if (array_key_exists($application->applicationId, $this->applications))
+		if (array_key_exists($application->id, $this->applications))
 			throw new InvalidConfigException("application {$application->id} is already defined");
 
 		$application->setDesktop($this);
-		$this->applications[$application->applicationId] = $application;
+		$this->applications[$application->id] = $application;
 		if ($createDesktopShortcut)
 			$this->registerShortcut(Shortcut::fromApplication($application));
 

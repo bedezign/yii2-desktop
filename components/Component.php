@@ -6,6 +6,7 @@
 namespace bedezign\yii2\desktop\components;
 
 use bedezign\yii2\desktop\Desktop;
+use bedezign\yii2\desktop\Icon;
 
 abstract class Component extends \yii\base\Component
 {
@@ -13,6 +14,8 @@ abstract class Component extends \yii\base\Component
 
 	/** @var Desktop */
 	protected $desktop   = null;
+
+	protected $icon      = null;
 
 	/**
 	 * This function returns the desktop.js compatible javascript code that is required to restore the component into
@@ -32,6 +35,10 @@ abstract class Component extends \yii\base\Component
 	{
 		$properties = $this->getPublicProperties();
 		$properties['class'] = static::className();
+
+		if ($this->icon)
+			// A bit weird since an icon itself is also a component, but it will work :)
+			$properties['icon'] = $this->icon->getConfig();
 		return $properties;
 	}
 
@@ -64,4 +71,35 @@ abstract class Component extends \yii\base\Component
 	{
 		$this->desktop = $desktop;
 	}
+
+	/**
+	 * @param Icon|string      $icon     If a string is specified, a regular icon is created and the string is used as image
+	 */
+	public function setIcon($icon)
+	{
+		if (is_string($icon)) {
+			$_icon = new Icon();
+			$_icon->image = $icon;
+			$icon =  $_icon;
+		}
+
+		$this->icon = $icon;
+	}
+
+	public function getIcon()
+	{
+		$icon = $this->icon;
+		if (!$icon)
+			$icon = new Icon;
+
+		$icon->desktop = $this->desktop;
+		return $icon;
+	}
+
+	public function getHasIcon()
+	{
+		return $this->icon != null;
+	}
+
+
 }

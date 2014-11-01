@@ -62,18 +62,16 @@ var desktop = (function ($, window, document, undefined) {
 
 		toggle_fullscreen: function(link) {
 			// Nearest parent window.
-			var $window = $(link).closest('div.application_window'),
-				data = {top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%'};
+			var $window = $(link).closest('div.application_window');
 
 			// Is it maximized already?
-			if ($window.hasClass('window_maximized')) {
-				// Restore window position.
+			if ($window.hasClass('window_maximized'))
+				// Restore window position to previous.
 				$window.removeClass('window_maximized').css($window.data('desktop-position'));
-			}
 			else {
-				var fullscreen = $.extend({}, data);
-				for (var css in data) data[css] = $window.css(css);
-				$window.data('desktop-position', data).addClass('window_maximized').css(fullscreen);
+				// Before going fullscreen, store the window position
+				desktop._helpers.store_window_position($window);
+				$window.addClass('window_maximized').css({top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%'});
 			}
 
 			desktop._helpers.activate($window);
@@ -118,9 +116,18 @@ var desktop = (function ($, window, document, undefined) {
 					.on('mouseenter', 'div.application_window', function () {
 						$(this)
 							.off('mouseenter')
-							.draggable({cancel: 'a', handle: 'div.window_titlebar', stop: function(e, ui) { desktop._helpers.on_window_changed(ui.helper); }})
+							.draggable({cancel: 'a', handle: 'div.window_titlebar',
+								stop: function(e, ui) {
+									desktop._helpers.store_window_position(ui.helper);
+									desktop._helpers.on_window_changed(ui.helper);
+								}
+							})
 							.resizable({minWidth: desktop._settings.minWidth, minHeight: desktop._settings.minHeight,
-								stop: function(e, ui) { desktop._helpers.on_window_changed(ui.element); }});
+								stop: function(e, ui) {
+									desktop._helpers.store_window_position(ui.helper);
+									desktop._helpers.on_window_changed(ui.element);
+								}
+							});
 					})
 					// Double click on the title bar maximizes the window
 					.on('dblclick', 'div.window_titlebar', function () { desktop.toggle_fullscreen(this); })
@@ -176,19 +183,19 @@ var desktop = (function ($, window, document, undefined) {
 				$('div.application_window').removeClass('window_topmost'); $window.addClass('window_topmost'); return $window;
 			},
 
+			store_window_position: function($window) {
+				var data = {top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%'};
+				for (var css in data) data[css] = $window.css(css);
+				$window.data('desktop-position', data);
+			},
+
 			/**
 			 * Handler for application window operations. It is triggered for moves, size changes and maximize toggles
 			 * @param $window
 			 */
 			on_window_changed: function($window) {
-				var data = {top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%'};
-
-				if ($window.hasClass('window_maximized')) {
-					data = $.extend(data, $window.data('position'));
-					data.maximized = true;
-				}
-				else
-					for (var css in data) data[css] = $window.css(css);
+				// Fetch whatever position was stored and optionally add the maximized state
+				var data = $.extend($window.data('desktop-position'), {maximized: $window.hasClass('window_maximized')});
 
 				// Make sure to update the iframe too, if needed
 				desktop._helpers.iframe_maximize($window);

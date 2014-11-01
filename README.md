@@ -51,4 +51,14 @@ A possible (very basic) setup:
 	}
 
      
-And that is it. This would should you a desktop with a single icon (default image). When opened, the iframe would contain whatever your admin UsersController::actionIndex() returns.
+And that is it. This would show you a desktop with a single icon (default image). When opened, the iframe would contain whatever your admin UsersController::actionIndex() returns.
+
+If you have CSRF enabled you'll have to disable it for the desktop event action, as it won't include the token and get blocked:
+
+	public function beforeAction($action)
+	{
+		if ($action->id == 'desktop-event') this->enableCsrfValidation = false;
+		return parent::beforeAction($action);
+	}
+
+Note that this does not define icons, so the default one will be included. If you want to add custom icons, all you need to do is specify an `'icon' => '<image path>'` in the application creation (or an instance of either an `Icon` or a `GlyphIcon`) and you're golden.

@@ -4,11 +4,11 @@
 
 	use \yii\helpers\Html;
 	$title = $application->title;
-	$icon  = Html::img($application->iconUrl, ['alt' => $title]);
+	$icon  = $application->icon->render(\bedezign\yii2\desktop\Icon::DISPLAY_TITLEBAR);
 
 	$attributes = ['id' => 'window_' . $application->applicationId, 'class' => 'application_window absolute'];
-	if ($application->windowPosition)
-		Html::addCssStyle($attributes, $application->windowPosition);
+	if ($application->windowState)
+		Html::addCssStyle($attributes, $application->windowState);
 
 	if ($application->windowMaximised)
 		Html::addCssClass($attributes, 'window_maximized');
@@ -19,7 +19,7 @@
 
 <div <?= Html::renderTagAttributes($attributes) ?>>
 	<div class="window_titlebar">
-		<div class="window_icon"><?= $icon ?></div>
+		<?= $icon ?>
 		<div class="window_title"><?= $title ?></div>
 		<div class="window_buttons">
 			<a href="#" class="window_button minimize"></a>
