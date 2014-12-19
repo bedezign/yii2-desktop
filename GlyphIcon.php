@@ -24,12 +24,12 @@ class GlyphIcon extends Icon
 
 		$styles = [];
 		switch ($type) {
-			case self::DISPLAY_DOCK:      $styles = ['position' => 'relative', 'top' => '1px', 'font-size' => '16px', 'padding-right' => '5px']; break;
+			case self::DISPLAY_DOCK:      $styles = ['position' => 'relative', 'top' => '3px', 'font-size' => '16px', 'padding-right' => '5px']; break;
 			case self::DISPLAY_TITLEBAR : $styles = ['float' => 'left', 'margin' => '4px 8px 0 0', 'font-size' => '20px']; break;
 			case self::DISPLAY_DESKTOP :  $styles = ['font-size' => '32px']; break;
 		}
 
-		 Html::addCssStyle($attributes, $styles);
+		Html::addCssStyle($attributes, $styles);
 		return Html::tag('span', '', $attributes);
 	}
 }

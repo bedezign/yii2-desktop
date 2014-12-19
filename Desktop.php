@@ -4,7 +4,6 @@
  *
  * @author    Steve Guns <steve@bedezign.com>
  * @package   com.bedezign.9maand.com
- * @category
  * @copyright 2014 B&E DeZign
  */
 
@@ -48,11 +47,17 @@ class Desktop extends \yii\base\Widget
 	 */
 	public $id = null;
 
+	/** @var string If set this is the path containing all icons for applications, if they have a relative url */
+	public $iconPath = null;
+
 	/**
 	 * At runtime, this variable contains the assets base folder
 	 * @var string
 	 */
 	public $assetsUrl = null;
+
+	/** @var Menu */
+	protected $menu = null;
 
 	/** @var Application[] */
 	protected $applications = [];
@@ -74,7 +79,12 @@ class Desktop extends \yii\base\Widget
 	public function run()
 	{
 		$this->assetsUrl = assets\DesktopAssets::register($this->view)->baseUrl;
-		return $this->render('desktop', ['desktop' => $this, 'applications' => $this->applications, 'shortcuts' => $this->shortcuts]);
+		return $this->render('desktop', [
+			'desktop' => $this,
+			'menu' => $this->menu,
+			'applications' => $this->applications,
+			'shortcuts' => $this->shortcuts
+		]);
 	}
 
 	/**
@@ -102,13 +112,23 @@ class Desktop extends \yii\base\Widget
 
 	/**
 	 * Add an application to the desktop
-	 * @param Application $application
+	 * @param Application|array $application
 	 * @param bool $createDesktopShortcut If you want to automatically create a shortcut on the desktop
 	 * @return bool
 	 * @throws InvalidConfigException
 	 */
-	public function registerApplication(Application $application, $createDesktopShortcut = true)
+	public function registerApplication($application, $createDesktopShortcut = true)
 	{
+		if (!$application instanceof Application) {
+			if (!is_array($application))
+				throw new InvalidConfigException('Invalid application specified');
+
+			if (!isset($application['class']))
+				$application['class'] = Application::className();
+
+			$application = \Yii::createObject($application);
+		}
+
 		if (array_key_exists($application->id, $this->applications))
 			throw new InvalidConfigException("application {$application->id} is already defined");
 
@@ -120,6 +140,12 @@ class Desktop extends \yii\base\Widget
 		return true;
 	}
 
+	/**
+	 * Attempts to find a registered application
+	 *
+	 * @param string $application
+	 * @return Application|null
+	 */
 	public function findApplicationById($application)
 	{
 		if (array_key_exists($application, $this->applications))
@@ -128,8 +154,25 @@ class Desktop extends \yii\base\Widget
 		return null;
 	}
 
-	public function registerShortcut(Shortcut $shortcut)
+	/**
+	 * Add a new shortcut to the desktop.
+	 *
+	 * @param Shortcut|array $shortcut
+	 * @return bool
+	 * @throws InvalidConfigException
+	 */
+	public function registerShortcut($shortcut)
 	{
+		if (!$shortcut instanceof Shortcut) {
+			if (!is_array($shortcut))
+				throw new InvalidConfigException('Invalid shortcut specified');
+
+			if (!isset($shortcut['class']))
+				$shortcut['class'] = Shortcut::className();
+
+			$shortcut = \Yii::createObject($shortcut);
+		}
+
 		$shortcut->setDesktop($this);
 
 		// No id assigned, create one
@@ -175,6 +218,30 @@ class Desktop extends \yii\base\Widget
 			'x' => intval($this->grid['margin'] + $halfGrid + (($this->iconAutoPosition[0] - 1) * $this->grid['size'])),
 			'y' => intval($this->grid['margin'] + $halfGrid + ($this->iconAutoPosition[1] * $this->grid['size'])),
 		];
+	}
+
+	/**
+	 * Registers a global menu (always shown without being linked to an application)
+	 * @param MenuShortcut $menu  Top level menu item
+	 */
+	public function registerMenu(MenuShortcut $menu)
+	{
+		if (!$this->menu) $this->menu = new Menu;
+		$this->menu->addMenu($menu, null);
+		$this->menu->setDesktop($this);
+	}
+
+	/**
+	 * @param string $application
+	 * @param MenuShortcut $menu
+	 */
+	public function registerApplicationMenu($application, MenuShortcut $menu)
+	{
+		if (!$this->menu) $this->menu = new Menu;
+		if (is_string($application))
+			$application = $this->findApplicationById($application);
+		$this->menu->addMenu($menu, $application);
+		$this->menu->setDesktop($this);
 	}
 
 	public function getRestoreScript()
@@ -228,13 +295,11 @@ class Desktop extends \yii\base\Widget
 
 		if (isset($applications))
 			foreach ($applications as $application) {
-				$application = \Yii::createObject($application);
 				$desktop->registerApplication($application, false);
 			}
 
 		if (isset($shortcuts))
 			foreach ($shortcuts as $shortcut) {
-				$shortcut = \Yii::createObject($shortcut);
 				$desktop->registerShortcut($shortcut);
 			}
 

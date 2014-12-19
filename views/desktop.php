@@ -17,6 +17,7 @@
 	$this->registerJs("desktop.boot($options);");
 ?>
 <div class="desktop_wrapper">
+	<?= $this->render('_menu', ['desktop' => $desktop, 'menu' => $menu]) ?>
 	<div id="<?= $desktopId ?>" class="desktop">
 		<?php foreach($shortcuts as $shortcut) echo $shortcut->render(); ?>
 		<?php foreach($applications as $application) echo $application->renderWindow(); ?>

@@ -1,7 +1,7 @@
 <?php
 /**
- *
- *
+ * Represents a (regular image) icon that knows how to render itself on all different parts of the desktop
+ * If the desktop has an iconPath configured and the image is a relative url, it will use the iconPath as baseUrl
  */
 
 namespace bedezign\yii2\desktop;
@@ -22,12 +22,15 @@ class Icon extends components\Component
 		$image = $this->image;
 		if (!$image)
 			$image = $this->desktop->assetsUrl . '/images/icon_application.png';
+		else if (\yii\helpers\Url::isRelative($image) && $this->desktop->iconPath)
+			$image = rtrim($this->desktop->iconPath, '/') . '/' . $image;
 
 		$attributes = ['src' => $image];
 
 		$styles = [];
 		switch ($type) {
-			case self::DISPLAY_DOCK:      $styles = ['position' => 'relative', 'top' => '5px', 'height' => '22px']; break;
+			case self::DISPLAY_MENU:      $styles = ['height' => '16px', 'position' => 'relative', 'top' => '-2px']; break;
+			case self::DISPLAY_DOCK:      $styles = ['height' => '16px']; break;
 			case self::DISPLAY_TITLEBAR : $styles = ['float' => 'left', 'margin' => '4px 5px 0 0', 'height' => '20px' ]; break;
 			case self::DISPLAY_DESKTOP :  $styles = ['height' => '32px']; break;
 		}

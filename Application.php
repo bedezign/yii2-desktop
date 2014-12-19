@@ -1,7 +1,6 @@
 <?php
 /**
  *
- *
  */
 
 
@@ -10,7 +9,9 @@ namespace bedezign\yii2\desktop;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
-class Application extends components\Component
+class Application
+	extends components\Component
+	implements DesktopEventHandler
 {
 	/**
 	 * Unique ID for this application. Used for serializing
@@ -91,7 +92,6 @@ class Application extends components\Component
 		$this->windowState['top'] = str_replace('px', '', $position[1]) . 'px';
 	}
 
-
 	/**
 	 * Converts the ID into an internally used application ID
 	 * @return string
@@ -140,7 +140,7 @@ class Application extends components\Component
 		return <<<HTML
 <li id="icon_dock_{$id}">
 	<a href="#window_{$id}" id="{$id}" class="application_dock_button">
-		$icon $title
+		$icon <span class="title">$title</span>
 	</a>
 </li>
 HTML;

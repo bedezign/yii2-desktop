@@ -5,12 +5,11 @@
  * render method for custom things.
  */
 
-
 namespace bedezign\yii2\desktop;
 
-use yii\base\Component;
-
-class Shortcut extends components\Component
+class Shortcut
+	extends components\Component
+	implements DesktopEventHandler
 {
 	/**
 	 * If you leave this on null, no label will be rendered
@@ -31,6 +30,7 @@ class Shortcut extends components\Component
 	public $anchor    = null;
 
 	public $data      = null;
+
 	/**
 	 * Absolute position of the shortcut
 	 * @var array['x', 'y']

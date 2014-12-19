@@ -164,7 +164,57 @@ var desktop = (function ($, window, document, undefined) {
 			},
 
 			menu : function() {
+				var $activeMenu = null, openMenu = function ($a, $menu) {
+					// If this is a main menu and not the active one
+					if (!$menu.hasClass('submenu') && !$menu.is($activeMenu)) {
+						if ($activeMenu) {
+							// Close the previous main menu if there was one
+							$('ul.menu', $activeMenu).add($activeMenu).hide();
+							$('a.menu-trigger', $activeMenu).add($activeMenu.prev('a.menu-trigger')).removeClass('active');
+						}
+						$activeMenu = $menu;
+					}
 
+					// If the new menu is hidden, position and show it
+					if ($menu.is(':hidden')) {
+						var pos = $a.position();
+						if ($a.hasClass('submenu')) {
+							// Submenu, position is to the right and about the same height
+							$menu.css({top: pos.top, left: pos.left + $a.width() + 21});
+						}
+						else
+							// Main menu, just use the left
+							$menu.css('left', pos.left);
+
+						$a.addClass('active');
+						$menu.show();
+					}
+				};
+
+				$('.menus', '.desktop_wrapper')
+					.on('mousedown', 'a.menu-trigger', function(e) {
+						var $a = $(this), $menu = $a.next('ul.menu');
+						if ($menu.is(':hidden'))
+							openMenu($a, $menu);
+						e.stopPropagation();
+					})
+					// When entering any link that spawns a menu,
+					.on('mouseenter', 'a.menu-trigger', function (e) {
+						var $a = $(this), $menu = $a.next('ul.menu');
+						// If there is a menu active already, open the relevant one
+						if ($('ul.menu').is(':visible')) {
+							openMenu($a, $menu);
+						}
+						e.stopPropagation();
+					})
+					.on('mouseenter', 'a', function (e) {
+						var $a = $(this), $menu = $(this).closest('ul.menu'), $activeMenu = null;
+						if ($a.hasClass('menu-trigger')) $activeMenu = $a.next('ul.menu');
+						// deactivate all links except the current one (if any)
+						$('a.menu-trigger.active', $menu).not($a).removeClass('active');
+						// close all menus except the current one
+						$('ul.menu', $menu).not($activeMenu).hide();
+					});
 			},
 
 			restore_state: function() {
@@ -175,8 +225,8 @@ var desktop = (function ($, window, document, undefined) {
 		_helpers: {
 
 			clear_active: function() {
-				$('a.active, tr.active').removeClass('active');
-				$('ul.desktop-menu').hide();
+				$('a.active').removeClass('active');
+				$('ul.menu').hide();
 			},
 
 			activate: function($window) {

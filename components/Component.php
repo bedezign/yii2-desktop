@@ -42,20 +42,6 @@ abstract class Component extends \yii\base\Component
 		return $properties;
 	}
 
-	public function canHandleEvent($type)
-	{
-		return false;
-	}
-
-	/**
-	 * @param $data
-	 * @return bool      true if anything changed, false if not
-	 */
-	function event($data)
-	{
-		return false;
-	}
-
 	/**
 	 * @return Desktop
 	 */
@@ -86,13 +72,15 @@ abstract class Component extends \yii\base\Component
 		$this->icon = $icon;
 	}
 
-	public function getIcon()
+	public function getIcon($alwaysReturnInstance = true)
 	{
 		$icon = $this->icon;
-		if (!$icon)
+		if (!$icon && $alwaysReturnInstance)
 			$icon = new Icon;
 
-		$icon->desktop = $this->desktop;
+		if ($icon)
+			$icon->desktop = $this->desktop;
+
 		return $icon;
 	}
 
@@ -100,6 +88,4 @@ abstract class Component extends \yii\base\Component
 	{
 		return $this->icon != null;
 	}
-
-
 }
