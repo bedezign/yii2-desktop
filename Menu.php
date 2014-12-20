@@ -31,7 +31,7 @@ class Menu
 	 */
 	public function addMenu(MenuShortcut $menu, Application $application = null)
 	{
-		$context = $application ? $application->id : 0;
+		$context = $application ? $application->getApplicationId() : 'global';
 		if (!isset($this->menus[$context]))
 			$this->menus[$context] = [];
 		$this->menus[$context][] = $menu;
@@ -40,13 +40,13 @@ class Menu
 	public function getShortcuts($global = false)
 	{
 		if ($global) {
-			if (isset($this->menus[0]))
-				return $this->menus[0];
+			if (isset($this->menus['global']))
+				return $this->menus['global'];
 			return null;
 		}
 
 		$menus = $this->menus;
-		unset($menus[0]);
+		unset($menus['global']);
 		return $menus;
 	}
 

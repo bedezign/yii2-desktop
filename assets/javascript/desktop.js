@@ -26,8 +26,13 @@ var desktop = (function ($, window, document, undefined) {
 		},
 
 		close_application: function(link) {
-			var $link = $(link), $application = $link.closest('div.application_window');
+			var $link = $(link), $application = $link.closest('div.application_window'),
+				$menu = desktop._helpers.source_to_menu($application)
+				;
 			$application.hide();
+			if ($menu && $menu.length)
+				$menu.hide();
+
 			$($link.attr('href')).parents('li').hide('fast');
 			desktop._helpers.event_dispatch('application.closed', $application);
 		},
@@ -230,7 +235,17 @@ var desktop = (function ($, window, document, undefined) {
 			},
 
 			activate: function($window) {
-				$('div.application_window').removeClass('window_topmost'); $window.addClass('window_topmost'); return $window;
+				$('div.application_window').removeClass('window_topmost');
+				$window.addClass('window_topmost');
+				desktop._helpers.switch_menu($window);
+				return $window;
+			},
+
+			// Activate the menu associated with the given window
+			switch_menu: function($window) {
+				var $menu = desktop._helpers.source_to_menu($window);
+				$('.application_menu').not($menu).hide();
+				if ($menu.length) $menu.show();
 			},
 
 			store_window_position: function($window) {
@@ -272,6 +287,9 @@ var desktop = (function ($, window, document, undefined) {
 			 * @returns string   The related application ID
 			 */
 			source_to_application_identifier: function($source) {
+				if (typeof $source == 'string')
+					return $source;
+
 				if ($source.hasClass('application_window')) {
 					var $dock = desktop._helpers.window_to_dock($source);
 					if ($dock.length) return $dock.prop('id');
@@ -286,6 +304,11 @@ var desktop = (function ($, window, document, undefined) {
 					return $source.prop('id');
 
 				return null;
+			},
+
+			source_to_menu: function($source) {
+				var application = desktop._helpers.source_to_application_identifier($source);
+				return $("#" + application + "_menu");
 			},
 
 			event_dispatch: function(event, $source, data) {

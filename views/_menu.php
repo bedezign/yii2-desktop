@@ -7,17 +7,19 @@
 		return;
 ?>
 <div class="menus">
-	<?php if ($global = $menu->getShortcuts(true)): ?>
-		<div class="global-menu menu">
-			<?= $global ? $this->render('_rootMenuShortcut', ['shortcut' => $global]) : '' ?>
-		</div>
+	<?php if ($globalMenu = $menu->getShortcuts(true)): ?>
+		<?php foreach ($globalMenu as $rootShortcut): ?>
+			<div class="global-menu menu">
+				<?= $this->render('_rootMenuShortcut', ['shortcut' => $rootShortcut]) ?>
+			</div>
+		<?php endforeach ?>
 	<?php endif; ?>
 
 	<?php foreach ($menu->getShortcuts() as $application => $applicationMenus): ?>
-		<div class="application-menu menu" id="menu-<?= $application ?>">
+		<div class="application_menu menu" id="<?= $application ?>_menu">
 			<?php foreach ($applicationMenus as $rootShortcut): ?>
 				<?= $this->render('_rootMenuShortcut', ['shortcut' => $rootShortcut]) ?>
-			<?php endforeach; ?>
+			<?php endforeach ?>
 		</div>
-	<?php endforeach; ?>
+	<?php endforeach ?>
 </div>

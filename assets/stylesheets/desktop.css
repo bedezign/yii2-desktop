@@ -168,6 +168,10 @@ div.ui-resizable-handle {
   float: left;
 }
 
+.desktop_wrapper div.menus div.application_menu {
+  display: none;
+}
+
 .desktop_wrapper div.menus ul {
   background: none repeat scroll 0% 0% #EEE;
   border-right: 1px solid #333;
